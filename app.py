@@ -270,4 +270,19 @@ with tab2:
     if st.button("Charger les rôles Purview"):
         assignments = fetch_purview_assignments()
         if not assignments:
-            st.info("
+            st.info("Aucune assignation Purview trouvée ou compte Purview non configuré.")
+        else:
+            df_purview = build_purview_dataframe(assignments)
+            st.dataframe(df_purview, use_container_width=True, hide_index=True)
+            st.download_button("Exporter CSV Purview", df_purview.to_csv(index=False).encode("utf-8"), file_name="purview_roles.csv")
+
+# ------------------- Notes Permissions -------------------
+with st.expander("Pré-requis & permissions (à ouvrir si besoin)"):
+    st.markdown("""
+- **Service principal** avec permissions **Application** (admin consent requis) :
+  - `RoleManagement.Read.Directory`
+  - `Directory.Read.All`
+  - `Group.Read.All` (optionnel pour l’expansion des groupes)
+- Pour Purview :
+  - Service principal doit avoir **lecteur ou contributeur** sur le compte Purview
+""")
