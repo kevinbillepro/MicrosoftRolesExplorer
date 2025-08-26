@@ -11,16 +11,16 @@ st.title("Entra ID – Rôles attribués (utilisateurs visibles)")
 st.caption("Affiche uniquement les rôles **effectivement attribués**. Option pour développer les groupes en membres.")
 
 # --------------- Auth (Service principal) ---------------
-tenant_id = st.secrets["AZURE_TENANT_ID"]
-client_id = st.secrets["AZURE_CLIENT_ID"]
-client_secret = st.secrets["AZURE_CLIENT_SECRET"]
+TENANT_ID = st.secrets["AZURE_TENANT_ID"]
+CLIENT_ID = st.secrets["AZURE_CLIENT_ID"]
+CLIENT_SECRET = st.secrets["AZURE_CLIENT_SECRET"]
 
 def get_access_token(tenant_id: str, client_id: str, client_secret: str) -> str:
     url = f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"
     data = {
         "grant_type": "client_credentials",
-        "CLIENT_ID": client_id,
-        "CLIENT_SECRET": client_secret,
+        "CLIENT_ID": CLIENT_ID,
+        "CLIENT_SECRET": CLIENT_SECRET,
         "scope": "https://graph.microsoft.com/.default",
     }
     r = requests.post(url, data=data, timeout=60)
