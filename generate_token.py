@@ -2,9 +2,9 @@ import requests
 from pathlib import Path
 
 # --- Paramètres à remplir ---
-tenant_id = "TON_TENANT_ID"
-client_id = "TON_CLIENT_ID"
-client_secret = "TON_CLIENT_SECRET"
+tenant_id=st.secrets["AZURE_TENANT_ID"],
+client_id=st.secrets["AZURE_CLIENT_ID"],
+client_secret=st.secrets["AZURE_CLIENT_SECRET"]
 
 # --- Endpoint OAuth2 ---
 url = f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"
