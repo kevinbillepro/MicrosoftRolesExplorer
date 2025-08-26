@@ -4,9 +4,9 @@ import requests
 from fetch_roles import get_azure_roles, get_teams_roles, get_intune_roles, get_purview_roles
 
 # --- Service Principal credentials ---
-tenant_id = st.secrets["tenant_id"]
-client_id = st.secrets["client_id"]
-client_secret = st.secrets["client_secret"]
+tenant_id = st.secrets["AZURE_TENANT_ID"]
+client_id = st.secrets["AZURE_CLIENT_ID"]
+client_secret = st.secrets["AZURE_CLIENT_SECRET"]
 
 # --- Fonction pour récupérer le token via Service Principal ---
 def get_access_token(tenant_id, client_id, client_secret):
