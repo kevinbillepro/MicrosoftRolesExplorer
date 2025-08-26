@@ -1,12 +1,40 @@
 import streamlit as st
 import pandas as pd
+import requests
 from fetch_roles import get_azure_roles, get_teams_roles, get_intune_roles, get_purview_roles
 
+# --- Service Principal credentials ---
+tenant_id = st.secrets["tenant_id"]
+client_id = st.secrets["client_id"]
+client_secret = st.secrets["client_secret"]
+
+# --- Fonction pour récupérer le token via Service Principal ---
+def get_access_token(tenant_id, client_id, client_secret):
+    url = f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"
+    payload = {
+        "grant_type": "client_credentials",
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "scope": "https://graph.microsoft.com/.default"
+    }
+    resp = requests.post(url, data=payload)
+    resp.raise_for_status()
+    token = resp.json().get("access_token")
+    if not token:
+        raise ValueError("Impossible de récupérer le token")
+    return token
+
+# --- Streamlit UI ---
 st.set_page_config(page_title="Microsoft Roles Explorer", layout="wide")
 st.title("Microsoft Roles Explorer")
 
-# --- Token OAuth sécurisé ---
-token = st.secrets["graph_token"]  # Token Microsoft Graph
+# --- Récupérer le token automatiquement ---
+try:
+    token = get_access_token(tenant_id, client_id, client_secret)
+    st.success("Token généré via Service Principal ✅")
+except Exception as e:
+    st.error(f"Erreur lors de la génération du token : {e}")
+    st.stop()
 
 # --- Sélection du service ---
 service_options = ["Azure", "Teams", "Intune", "Purview", "Tous"]
@@ -16,10 +44,10 @@ service_selected = st.selectbox("Choisir un service", service_options)
 team_id = ""
 purview_account = ""
 
-if service_selected == "Teams" or service_selected == "Tous":
+if service_selected in ["Teams", "Tous"]:
     team_id = st.text_input("ID de l'équipe Teams")
 
-if service_selected == "Purview" or service_selected == "Tous":
+if service_selected in ["Purview", "Tous"]:
     purview_account = st.text_input("Nom du compte Purview")
 
 # --- Charger les rôles ---
@@ -35,7 +63,7 @@ if st.button("Charger les rôles"):
                 roles_list.extend(get_teams_roles(token, team_id))
             elif service_selected == "Teams":
                 st.warning("Veuillez entrer un ID d'équipe Teams.")
-        
+
         if service_selected in ["Intune", "Tous"]:
             roles_list.extend(get_intune_roles(token))
 
