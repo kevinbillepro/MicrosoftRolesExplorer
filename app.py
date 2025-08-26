@@ -19,8 +19,8 @@ def get_access_token(tenant_id: str, client_id: str, client_secret: str) -> str:
     url = f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"
     data = {
         "grant_type": "client_credentials",
-        "client_id": client_id,
-        "client_secret": client_secret,
+        "CLIENT_ID": client_id,
+        "CLIENT_SECRET": client_secret,
         "scope": "https://graph.microsoft.com/.default",
     }
     r = requests.post(url, data=data, timeout=60)
